@@ -1,4 +1,4 @@
-cd git/http-sandbox/
+cd ../../git/http-sandbox/
 git pull
 git checkout -b newbranch
 DATE=$(date +"%Y%m%d%H%M")
