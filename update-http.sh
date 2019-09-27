@@ -4,7 +4,7 @@ git checkout -b newbranch
 DATE=$(date +"%Y%m%d%H%M")
 #echo 'Updated ' $DATE >> /data/data/com.termux/files/home/git/http-sandbox/index.html
 #sed -i 's/<h2>Updated [0-9]*/<h2>Updated '$DATE'/g' /data/data/com.termux/files/home/git/http-sandbox/index.html
-python start.py
+python /data/data/com.termux/files/home/git/html-generator/start.py
 git add index.html
 git commit -m 'Update' -m "'$DATE'"
 git push origin newbranch:master
