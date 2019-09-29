@@ -13,7 +13,7 @@ def create(file, date):
         <script src="main.js"></script>
     </head>
     <body>
-    <h1>Hello World AIK!</h1>
+    <h1>Hello World</h1>
     <h2>Updated """ + date + """</h2>
     </body>
     </html>"""
@@ -22,6 +22,6 @@ def create(file, date):
 
 
 now = datetime.now() # current date and time
-today = now.strftime("%Y%d%m-%H:%M:%S")
+today = now.strftime("%Y%m%d-%H:%M:%S")
 #create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today)
 create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today)
