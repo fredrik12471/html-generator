@@ -114,7 +114,7 @@ def saveUnfollowerListToFile(file, listOfUnfollowers):
 now = datetime.now() # current date and time
 today = now.strftime("%Y%m%d-%H:%M:%S")
 #create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today)
-#create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today)
+create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today)
 
 
 currentFollowerList = createTwitterData();
