@@ -50,9 +50,9 @@ def createTwitterPage(file, contentFile, twitterAccount):
     </html>"""
     f.write(text)
 
-def createTwitterData(twitterAccount):
+def createTwitterData(twitterAccount, t):
     #t = Twitter(auth=OAuth("JXLBr4AACnVzgZAVjDFhlETIv", "LlO8wNFXWGhTA0gff3fssRmB3h8lnIZOes1Iybp1bdtL5XGFpr", "750741242846248960-yvsRcSVRBOsyAX8VbO9HAmLIjF6fb0R", "TfKcfloulOz8DPyX7MHoLDObttWv55yiyNs9Szh7D4DqA"))
-    t = Twitter(auth=OAuth("750741242846248960-yvsRcSVRBOsyAX8VbO9HAmLIjF6fb0R", "TfKcfloulOz8DPyX7MHoLDObttWv55yiyNs9Szh7D4DqA", "JXLBr4AACnVzgZAVjDFhlETIv", "LlO8wNFXWGhTA0gff3fssRmB3h8lnIZOes1Iybp1bdtL5XGFpr"))
+    #t = Twitter(auth=OAuth("750741242846248960-yvsRcSVRBOsyAX8VbO9HAmLIjF6fb0R", "TfKcfloulOz8DPyX7MHoLDObttWv55yiyNs9Szh7D4DqA", "JXLBr4AACnVzgZAVjDFhlETIv", "LlO8wNFXWGhTA0gff3fssRmB3h8lnIZOes1Iybp1bdtL5XGFpr"))
     #t.statuses.home_timeline()
     #followerList = t.followers.list(screen_name="fwsthlm")
     #print("Size of followerList: " + str(len(followerList)))
@@ -119,13 +119,14 @@ def saveFollowerListToFile(file, listOfFollowers):
         f.write(str(x) + "\n")
     f.close
 
-def saveUnfollowerListToFile(file, listOfUnfollowers):
+def saveUnfollowerListToFile(file, listOfUnfollowers, today, t):
     if not os.path.exists(os.path.dirname(file)):
         os.makedirs(os.path.dirname(file))
     f = open(file, "a+")
     f.seek(0)
     for x in listOfUnfollowers:
-        f.write("<p>" + str(x) + " unfollowed.</p>\n")
+        account = t.users.show(user_id=str(x))
+        f.write("<p>" + today + ": " + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p>\n")
     f.close
 
 twitterAccounts = ["fwsthlm", "aikfotboll"]
@@ -133,8 +134,9 @@ now = datetime.now() # current date and time
 today = now.strftime("%Y%m%d-%H:%M:%S")
 #create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today, twitterAccounts)
 create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today, twitterAccounts)
+t = Twitter(auth=OAuth("750741242846248960-yvsRcSVRBOsyAX8VbO9HAmLIjF6fb0R", "TfKcfloulOz8DPyX7MHoLDObttWv55yiyNs9Szh7D4DqA", "JXLBr4AACnVzgZAVjDFhlETIv", "LlO8wNFXWGhTA0gff3fssRmB3h8lnIZOes1Iybp1bdtL5XGFpr"))
 for twitterAccount in twitterAccounts:
-    currentFollowerList = createTwitterData(twitterAccount);
+    currentFollowerList = createTwitterData(twitterAccount, t);
     #print("Size of current follower list: " + str(len(currentFollowerList)))
     #previousFollowerList = getPreviousFollowers("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\followers.txt")
     previousFollowerList = getPreviousFollowers("/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + "/followers.txt")
@@ -142,8 +144,8 @@ for twitterAccount in twitterAccounts:
     if previousFollowerList is not None:
         unfollowerList = Diff(previousFollowerList, currentFollowerList)
         #print("Size of unfollowerList: " + str(len(unfollowerList)))
-        #saveUnfollowerListToFile("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\unfollowers.txt", unfollowerList)
-        saveUnfollowerListToFile("/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + "/unfollowers.txt", unfollowerList)
+        #saveUnfollowerListToFile("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\unfollowers.txt", unfollowerList, today, t)
+        saveUnfollowerListToFile("/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + "/unfollowers.txt", unfollowerList, today, t)
         #for x in unfollowerList:
             #print(x + " unfollowed")
     #saveFollowerListToFile("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\followers.txt", currentFollowerList)
