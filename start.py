@@ -39,7 +39,7 @@ def createTwitterPage(file, contentFile, twitterAccount):
     </head>
     <body>
     <h1>Twitter Tapas</h1>
-    <h2>The twitter tapas for " + twitterAccount + "</h2>
+    <h2>The twitter tapas for """ + twitterAccount + """</h2>
     <p><a href="../index.html">Home</a> </p>
     """
     content = getContentFromFile(contentFile)
