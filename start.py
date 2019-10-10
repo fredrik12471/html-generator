@@ -1,9 +1,10 @@
 from datetime import datetime
 from twitter import *
 import os
+import time
 
 
-def create(file, date):
+def create(file, date, twitterAccounts):
     f = open(file, 'w')
     text = """<!DOCTYPE html>
     <html>
@@ -17,13 +18,14 @@ def create(file, date):
     </head>
     <body>
     <h1>Hello World</h1>
-    <h2>Updated """ + date + """</h2>
-    <p><a href="twitter/fwsthlm.html">The Twitter Tapas</a> </p>
-    </body>
+    <h2>Updated """ + date + """</h2> """
+    for twitterAccount in twitterAccounts:
+        text += """<p><a href="twitter/""" + twitterAccount + """.html">The Twitter Tapas for """ + twitterAccount + """</a> </p>"""
+    text += """</body>
     </html>"""
     f.write(text)
 
-def createTwitterPage(file, contentFile):
+def createTwitterPage(file, contentFile, twitterAccount):
     f = open(file, 'w')
     text = """<!DOCTYPE html>
     <html>
@@ -37,7 +39,7 @@ def createTwitterPage(file, contentFile):
     </head>
     <body>
     <h1>Twitter Tapas</h1>
-    <h2>The twitter tapas for fwsthlm</h2>
+    <h2>The twitter tapas for " + twitterAccount + "</h2>
     <p><a href="../index.html">Home</a> </p>
     """
     content = getContentFromFile(contentFile)
@@ -48,7 +50,7 @@ def createTwitterPage(file, contentFile):
     </html>"""
     f.write(text)
 
-def createTwitterData():
+def createTwitterData(twitterAccount):
     #t = Twitter(auth=OAuth("JXLBr4AACnVzgZAVjDFhlETIv", "LlO8wNFXWGhTA0gff3fssRmB3h8lnIZOes1Iybp1bdtL5XGFpr", "750741242846248960-yvsRcSVRBOsyAX8VbO9HAmLIjF6fb0R", "TfKcfloulOz8DPyX7MHoLDObttWv55yiyNs9Szh7D4DqA"))
     t = Twitter(auth=OAuth("750741242846248960-yvsRcSVRBOsyAX8VbO9HAmLIjF6fb0R", "TfKcfloulOz8DPyX7MHoLDObttWv55yiyNs9Szh7D4DqA", "JXLBr4AACnVzgZAVjDFhlETIv", "LlO8wNFXWGhTA0gff3fssRmB3h8lnIZOes1Iybp1bdtL5XGFpr"))
     #t.statuses.home_timeline()
@@ -56,7 +58,22 @@ def createTwitterData():
     #print("Size of followerList: " + str(len(followerList)))
     #for x in followerList["users"]:
     #    print(x["id"])
-    followerList = t.followers.ids(screen_name="fwsthlm")
+    cursor = -1
+    #api_path = "https://api.twitter.com/1.1/endpoint.json?screen_name=targetUser"
+
+    followerList = t.followers.ids(screen_name=twitterAccount, cursor=cursor)
+    time.sleep(60)
+    results = list(map(str, followerList["ids"]))
+    cursor = followerList["next_cursor"]
+    while cursor != 0:
+        print("Cursor: " + str(cursor) + ", Total followers for " + twitterAccount + ": " + str(len(results)))
+        followerList = t.followers.ids(screen_name=twitterAccount, cursor=cursor)
+        time.sleep(60)
+        results += list(map(str, followerList["ids"]))
+        cursor = followerList["next_cursor"]
+
+
+    #followerList = t.followers.ids(screen_name=twitterAccount, cursor=cursor)
     #print("Size of followerList: " + str(len(followerList)))
     #for x in followerList["ids"]:
         #print(x)
@@ -111,31 +128,31 @@ def saveUnfollowerListToFile(file, listOfUnfollowers):
         f.write("<p>" + str(x) + " unfollowed.</p>\n")
     f.close
 
+twitterAccounts = ["fwsthlm", "aikfotboll"]
 now = datetime.now() # current date and time
 today = now.strftime("%Y%m%d-%H:%M:%S")
-#create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today)
-create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today)
+#create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today, twitterAccounts)
+create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today, twitterAccounts)
+for twitterAccount in twitterAccounts:
+    currentFollowerList = createTwitterData(twitterAccount);
+    #print("Size of current follower list: " + str(len(currentFollowerList)))
+    #previousFollowerList = getPreviousFollowers("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\followers.txt")
+    previousFollowerList = getPreviousFollowers("/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + "/followers.txt")
+    #print("Size of previous follower list: " + str(len(previousFollowerList)))
+    if previousFollowerList is not None:
+        unfollowerList = Diff(previousFollowerList, currentFollowerList)
+        #print("Size of unfollowerList: " + str(len(unfollowerList)))
+        #saveUnfollowerListToFile("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\unfollowers.txt", unfollowerList)
+        saveUnfollowerListToFile("/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + "/unfollowers.txt", unfollowerList)
+        #for x in unfollowerList:
+            #print(x + " unfollowed")
+    #saveFollowerListToFile("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\followers.txt", currentFollowerList)
+    saveFollowerListToFile("/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + "/followers.txt", currentFollowerList)
 
-
-currentFollowerList = createTwitterData();
-#print("Size of current follower list: " + str(len(currentFollowerList)))
-#previousFollowerList = getPreviousFollowers("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\fwsthlm\\followers.txt")
-previousFollowerList = getPreviousFollowers("/data/data/com.termux/files/home/git/http-sandbox/twitter/fwsthlm/followers.txt")
-#print("Size of previous follower list: " + str(len(previousFollowerList)))
-if previousFollowerList is not None:
-    unfollowerList = Diff(previousFollowerList, currentFollowerList)
-    #print("Size of unfollowerList: " + str(len(unfollowerList)))
-    #saveUnfollowerListToFile("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\fwsthlm\\unfollowers.txt", unfollowerList)
-    saveUnfollowerListToFile("/data/data/com.termux/files/home/git/http-sandbox/twitter/fwsthlm/unfollowers.txt", unfollowerList)
-    #for x in unfollowerList:
-        #print(x + " unfollowed")
-#saveFollowerListToFile("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\fwsthlm\\followers.txt", currentFollowerList)
-saveFollowerListToFile("/data/data/com.termux/files/home/git/http-sandbox/twitter/fwsthlm/followers.txt", currentFollowerList)
-
-#createTwitterPage("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\fwsthlm.html",
-                #"C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\fwsthlm\\unfollowers.txt")
-createTwitterPage("/data/data/com.termux/files/home/git/http-sandbox/twitter/fwsthlm.html",
-                "/data/data/com.termux/files/home/git/http-sandbox/twitter/fwsthlm/unfollowers.txt")
+    #createTwitterPage("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + ".html",
+    #                  "C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\unfollowers.txt", twitterAccount)
+    createTwitterPage("/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + ".html",
+                      "/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + "/unfollowers.txt", twitterAccount)
 #currentFollowerList = createTwitterData();
 #previousFollowerList = getPreviousFollowers("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\fwsthlm\\followers.txt")
 #unfollowerList = Diff(previousFollowerList, currentFollowerList)
