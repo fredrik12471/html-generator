@@ -126,7 +126,10 @@ def saveUnfollowerListToFile(file, listOfUnfollowers, today, t):
     f.seek(0)
     for x in listOfUnfollowers:
         account = t.users.show(user_id=str(x))
-        f.write("<p>" + today + ": " + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p>\n")
+        if account not None:
+            f.write("<p>" + today + ": " + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p>\n")
+        else:
+            f.write("<p>" + today + ": Account with id: " + str(x) + " was suspended.</p>\n")
     f.close
 
 twitterAccounts = ["fwsthlm", "aikfotboll"]
