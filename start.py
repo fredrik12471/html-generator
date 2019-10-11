@@ -139,8 +139,8 @@ def saveUnfollowerListToFile(file, listOfUnfollowers, today, t):
 twitterAccounts = ["fwsthlm", "aikfotboll"]
 now = datetime.now() # current date and time
 today = now.strftime("%Y%m%d-%H:%M:%S")
-create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today, twitterAccounts)
-#create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today, twitterAccounts)
+#create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today, twitterAccounts)
+create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today, twitterAccounts)
 t = Twitter(auth=OAuth("750741242846248960-yvsRcSVRBOsyAX8VbO9HAmLIjF6fb0R", "TfKcfloulOz8DPyX7MHoLDObttWv55yiyNs9Szh7D4DqA", "JXLBr4AACnVzgZAVjDFhlETIv", "LlO8wNFXWGhTA0gff3fssRmB3h8lnIZOes1Iybp1bdtL5XGFpr"))
 for twitterAccount in twitterAccounts:
     currentFollowerList = createTwitterData(twitterAccount, t);
