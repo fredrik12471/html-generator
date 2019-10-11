@@ -11,7 +11,7 @@ def create(file, date, twitterAccounts):
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Tapas Theory</title>
+        <title>Liga Nord</title>
         <!-- meta name="viewport" content="width=device-width, initial-scale=1" -->
         <!--link rel="stylesheet" type="text/css" media="screen" href="main.css" / -->
         <script src="main.js"></script>
@@ -32,7 +32,7 @@ def createTwitterPage(file, contentFile, twitterAccount):
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Tapas Theory</title>
+        <title>Liga Nord</title>
         <!-- meta name="viewport" content="width=device-width, initial-scale=1" -->
         <!--link rel="stylesheet" type="text/css" media="screen" href="main.css" / -->
         <script src="main.js"></script>
@@ -42,9 +42,13 @@ def createTwitterPage(file, contentFile, twitterAccount):
     <h2>The twitter tapas for """ + twitterAccount + """</h2>
     <p><a href="../index.html">Home</a> </p>
     """
-    content = getContentFromFile(contentFile)
-    if content is not None:
-        text += content
+    
+    for line in reversed(list(open(contentFile))):
+        text += line.rstrip() + "\n"
+
+#    content = getContentFromFile(contentFile)
+#    if content is not None:
+#        text += content
     text += """
     </body>
     </html>"""
@@ -125,18 +129,18 @@ def saveUnfollowerListToFile(file, listOfUnfollowers, today, t):
     f = open(file, "a+")
     f.seek(0)
     for x in listOfUnfollowers:
-        account = t.users.show(user_id=str(x))
-        if account not None:
+        try:
+            account = t.users.show(user_id=str(x))
             f.write("<p>" + today + ": " + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p>\n")
-        else:
+        except:
             f.write("<p>" + today + ": Account with id: " + str(x) + " was suspended.</p>\n")
     f.close
 
 twitterAccounts = ["fwsthlm", "aikfotboll"]
 now = datetime.now() # current date and time
 today = now.strftime("%Y%m%d-%H:%M:%S")
-#create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today, twitterAccounts)
-create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today, twitterAccounts)
+create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today, twitterAccounts)
+#create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today, twitterAccounts)
 t = Twitter(auth=OAuth("750741242846248960-yvsRcSVRBOsyAX8VbO9HAmLIjF6fb0R", "TfKcfloulOz8DPyX7MHoLDObttWv55yiyNs9Szh7D4DqA", "JXLBr4AACnVzgZAVjDFhlETIv", "LlO8wNFXWGhTA0gff3fssRmB3h8lnIZOes1Iybp1bdtL5XGFpr"))
 for twitterAccount in twitterAccounts:
     currentFollowerList = createTwitterData(twitterAccount, t);
