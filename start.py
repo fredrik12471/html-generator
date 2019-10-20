@@ -13,14 +13,14 @@ def create(file, date, twitterAccounts):
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Liga Nord</title>
         <!-- meta name="viewport" content="width=device-width, initial-scale=1" -->
-        <!--link rel="stylesheet" type="text/css" media="screen" href="main.css" / -->
+        <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
         <script src="main.js"></script>
     </head>
     <body>
     <h1>Hello World</h1>
     <h2>Updated """ + date + """</h2> """
     for twitterAccount in twitterAccounts:
-        text += """<p><a href="twitter/""" + twitterAccount + """.html">The Twitter Tapas for """ + twitterAccount + """</a> </p>"""
+        text += """<p><a href="twitter/""" + twitterAccount + """.html">The unfollower history for """ + twitterAccount + """</a> </p>"""
     text += """</body>
     </html>"""
     f.write(text)
@@ -34,13 +34,14 @@ def createTwitterPage(file, contentFile, twitterAccount):
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Liga Nord</title>
         <!-- meta name="viewport" content="width=device-width, initial-scale=1" -->
-        <!--link rel="stylesheet" type="text/css" media="screen" href="main.css" / -->
+        <link rel="stylesheet" type="text/css" media="screen" href="../main.css" />
         <script src="main.js"></script>
     </head>
     <body>
-    <h1>Twitter Tapas</h1>
-    <h2>The twitter tapas for """ + twitterAccount + """</h2>
+    <h1>History of unfollowers</h1>
+    <h2>The history for """ + twitterAccount + """</h2>
     <p><a href="../index.html">Home</a> </p>
+    <div class="timeline">
     """
     
     for line in reversed(list(open(contentFile))):
@@ -50,6 +51,7 @@ def createTwitterPage(file, contentFile, twitterAccount):
 #    if content is not None:
 #        text += content
     text += """
+    </div>
     </body>
     </html>"""
     f.write(text)
@@ -131,9 +133,11 @@ def saveUnfollowerListToFile(file, listOfUnfollowers, today, t):
     for x in listOfUnfollowers:
         try:
             account = t.users.show(user_id=str(x))
-            f.write("<p>" + today + ": " + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p>\n")
+            #f.write("<p>" + today + ": " + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p>\n")
+            f.write("<div class=\"container left\"><div class=\"content\"><h2>" + today + "</h2><p>" + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p></div></div>\n")
         except:
-            f.write("<p>" + today + ": Account with id: " + str(x) + " was suspended.</p>\n")
+            #f.write("<p>" + today + ": Account with id: " + str(x) + " was suspended.</p>\n")
+            f.write("<div class=\"container left\"><div class=\"content\"><h2>" + today + "</h2><p>Account with id: " + str(x) + " was suspended.</p></div></div>\n")
     f.close
 
 twitterAccounts = ["fwsthlm", "aikfotboll"]
