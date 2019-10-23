@@ -17,10 +17,12 @@ def create(file, date, twitterAccounts):
         <script src="main.js"></script>
     </head>
     <body>
-    <h1>Hello World</h1>
-    <h2>Updated """ + date + """</h2> """
+    <div class="header">
+        <h1>Liga Nord</h1>
+        <p>Updated """ + date + """</p>
+    </div> \n"""
     for twitterAccount in twitterAccounts:
-        text += """<p><a href="twitter/""" + twitterAccount + """.html">The unfollower history for """ + twitterAccount + """</a> </p>"""
+        text += """<p><a href="twitter/""" + twitterAccount + """.html">The unfollower history for """ + twitterAccount + """</a> </p>\n"""
     text += """</body>
     </html>"""
     f.write(text)
@@ -38,8 +40,11 @@ def createTwitterPage(file, contentFile, twitterAccount):
         <script src="main.js"></script>
     </head>
     <body>
-    <h1>History of unfollowers</h1>
-    <h2>The history for """ + twitterAccount + """</h2>
+    <div class="header">
+        <h1>Liga Nord</h1>
+        <p>The history of """ + twitterAccount + """</p>
+        <a href="../index.html">Home</a>
+    </div> \n"""
     <p><a href="../index.html">Home</a> </p>
     <div class="timeline">
     """
