@@ -44,7 +44,7 @@ def createTwitterPage(file, contentFile, twitterAccount):
         <h1>Liga Nord</h1>
         <p>The history of """ + twitterAccount + """</p>
         <a href="../index.html">Home</a>
-    </div> \n"""
+    </div> \n
     <p><a href="../index.html">Home</a> </p>
     <div class="timeline">
     """
