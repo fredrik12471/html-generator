@@ -17,17 +17,24 @@ def create(file, date, twitterAccounts):
         <script src="main.js"></script>
     </head>
     <body>
+
     <div class="header">
         <h1>Liga Nord</h1>
-        <p>Updated """ + date + """</p>
-    </div> \n"""
+        <p>&nbsp;</p>
+    </div> 
+    <div class="linkedin">
+        <div class="linkedin__container">
+            <p class="linkedin__text">Updated """ + date + """</p>
+        </div>
+    </div>
+    \n"""
     for twitterAccount in twitterAccounts:
         text += """<p><a href="twitter/""" + twitterAccount + """.html">The unfollower history for """ + twitterAccount + """</a> </p>\n"""
     text += """</body>
     </html>"""
     f.write(text)
 
-def createTwitterPage(file, contentFile, twitterAccount):
+def createTwitterPage(file, contentFile, twitterAccount, today):
     f = open(file, 'w')
     text = """<!DOCTYPE html>
     <html>
@@ -41,14 +48,13 @@ def createTwitterPage(file, contentFile, twitterAccount):
     </head>
     <body>
     <div class="header">
-        <h1>Liga Nord</h1>
+        <h1><a href="../index.html">Liga Nord</a></h1>
         <p>The history of """ + twitterAccount + """</p>
-        <a href="../index.html">Home</a>
     </div> \n
-    <p><a href="../index.html">Home</a> </p>
-    <div class="timeline">
+<div class="page">
+  <div class="timeline">
+    <div class="timeline__group">
     """
-    
     unfollowersFromFile = list(open(contentFile))
     if len(unfollowersFromFile) != 0:
         for line in reversed(unfollowersFromFile):
@@ -59,6 +65,13 @@ def createTwitterPage(file, contentFile, twitterAccount):
 #        text += content
     text += """
     </div>
+  </div>
+</div>
+<div class="linkedin">
+  <div class="linkedin__container">
+    <p class="linkedin__text">Updated """ + today + """</p>
+  </div>
+</div>
     </body>
     </html>"""
     f.write(text)
@@ -132,7 +145,7 @@ def saveFollowerListToFile(file, listOfFollowers):
         f.write(str(x) + "\n")
     f.close
 
-def saveUnfollowerListToFile(file, listOfUnfollowers, today, t):
+def saveUnfollowerListToFile(file, listOfUnfollowers, listOfNewFollowers, today, t):
     if not os.path.exists(os.path.dirname(file)):
         os.makedirs(os.path.dirname(file))
     f = open(file, "a+")
@@ -140,19 +153,23 @@ def saveUnfollowerListToFile(file, listOfUnfollowers, today, t):
     for x in listOfUnfollowers:
         try:
             account = t.users.show(user_id=str(x))
-            #f.write("<p>" + today + ": " + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p>\n")
-            f.write("<div class=\"container left\"><div class=\"content\"><h2>" + today + "</h2><p>" + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p></div></div>\n")
+            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">2</span><span class=\"timeline__month\">Feb</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><h2>" + today + "</h2><p>" + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p></div></div></div>\n")
         except:
-            #f.write("<p>" + today + ": Account with id: " + str(x) + " was suspended.</p>\n")
-            f.write("<div class=\"container left\"><div class=\"content\"><h2>" + today + "</h2><p>Account with id: " + str(x) + " was suspended.</p></div></div>\n")
+            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">2</span><span class=\"timeline__month\">Feb</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><h2>" + today + "</h2><p>Account with id: " + str(x) + " was suspended.</p></div></div></div>\n")
+    for x in listOfNewFollowers:
+        try:
+            account = t.users.show(user_id=str(x))
+            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">2</span><span class=\"timeline__month\">Feb</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><h2>" + today + "</h2><p>" + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> followed.</p></div></div></div>\n")
+        except:
+            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">2</span><span class=\"timeline__month\">Feb</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><h2>" + today + "</h2><p>Account with id: " + str(x) + " followed.</p></div></div></div>\n")
     f.close
 
-twitterAccounts = ["fwsthlm", "aikfotboll"]
-#twitterAccounts = ["fwsthlm"]
+#twitterAccounts = ["fwsthlm", "aikfotboll"]
+twitterAccounts = ["fwsthlm"]
 now = datetime.now() # current date and time
 today = now.strftime("%Y%m%d-%H:%M:%S")
-#path = "C:\\Users\\Fredrik\\git\\http-sandbox\\"
-path = "/data/data/com.termux/files/home/git/http-sandbox/"
+path = "C:\\Users\\Fredrik\\git\\http-sandbox\\"
+#path = "/data/data/com.termux/files/home/git/http-sandbox/"
 #create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today, twitterAccounts)
 #create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today, twitterAccounts)
 create(path + "index.html", today, twitterAccounts)
@@ -171,10 +188,11 @@ for twitterAccount in twitterAccounts:
     #print("Size of previous follower list: " + str(len(previousFollowerList)))
     if previousFollowerList is not None:
         unfollowerList = Diff(previousFollowerList, currentFollowerList)
+        newfollowerList = Diff(currentFollowerList, previousFollowerList)
         #print("Size of unfollowerList: " + str(len(unfollowerList)))
         #saveUnfollowerListToFile("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\unfollowers.txt", unfollowerList, today, t)
         #saveUnfollowerListToFile("/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + "/unfollowers.txt", unfollowerList, today, t)
-        saveUnfollowerListToFile(path + "twitter/" + twitterAccount + "/unfollowers.txt", unfollowerList, today, t)
+        saveUnfollowerListToFile(path + "twitter/" + twitterAccount + "/unfollowers.txt", unfollowerList, newfollowerList, today, t)
         #for x in unfollowerList:
             #print(x + " unfollowed")
     #saveFollowerListToFile("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\followers.txt", currentFollowerList)
@@ -186,7 +204,7 @@ for twitterAccount in twitterAccounts:
     #createTwitterPage("/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + ".html",
     #                  "/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + "/unfollowers.txt", twitterAccount)
     createTwitterPage(path + "twitter/" + twitterAccount + ".html",
-                      path + "twitter/" + twitterAccount + "/unfollowers.txt", twitterAccount)
+                      path + "twitter/" + twitterAccount + "/unfollowers.txt", twitterAccount, today)
 
 #currentFollowerList = createTwitterData();
 #previousFollowerList = getPreviousFollowers("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\fwsthlm\\followers.txt")
