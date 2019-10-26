@@ -164,12 +164,12 @@ def saveUnfollowerListToFile(file, listOfUnfollowers, listOfNewFollowers, today,
             f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">2</span><span class=\"timeline__month\">Feb</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><h2>" + today + "</h2><p>Account with id: " + str(x) + " followed.</p></div></div></div>\n")
     f.close
 
-#twitterAccounts = ["fwsthlm", "aikfotboll"]
-twitterAccounts = ["fwsthlm"]
+twitterAccounts = ["fwsthlm", "aikfotboll"]
+#twitterAccounts = ["fwsthlm"]
 now = datetime.now() # current date and time
 today = now.strftime("%Y%m%d-%H:%M:%S")
-path = "C:\\Users\\Fredrik\\git\\http-sandbox\\"
-#path = "/data/data/com.termux/files/home/git/http-sandbox/"
+#path = "C:\\Users\\Fredrik\\git\\http-sandbox\\"
+path = "/data/data/com.termux/files/home/git/http-sandbox/"
 #create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today, twitterAccounts)
 #create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today, twitterAccounts)
 create(path + "index.html", today, twitterAccounts)
