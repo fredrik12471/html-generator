@@ -145,31 +145,36 @@ def saveFollowerListToFile(file, listOfFollowers):
         f.write(str(x) + "\n")
     f.close
 
-def saveUnfollowerListToFile(file, listOfUnfollowers, listOfNewFollowers, today, t):
+def saveUnfollowerListToFile(file, listOfUnfollowers, listOfNewFollowers, today, month, day, t):
     if not os.path.exists(os.path.dirname(file)):
         os.makedirs(os.path.dirname(file))
     f = open(file, "a+")
     f.seek(0)
+
     for x in listOfUnfollowers:
         try:
             account = t.users.show(user_id=str(x))
-            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">2</span><span class=\"timeline__month\">Feb</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><h2>" + today + "</h2><p>" + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p></div></div></div>\n")
+            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">" + day + "</span><span class=\"timeline__month\">" + month + "</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><p>" + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> unfollowed.</p></div></div></div>\n")
         except:
-            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">2</span><span class=\"timeline__month\">Feb</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><h2>" + today + "</h2><p>Account with id: " + str(x) + " was suspended.</p></div></div></div>\n")
+            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">" + day + "</span><span class=\"timeline__month\">" + month + "</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><p>Account with id: " + str(x) + " was suspended.</p></div></div></div>\n")
     for x in listOfNewFollowers:
         try:
             account = t.users.show(user_id=str(x))
-            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">2</span><span class=\"timeline__month\">Feb</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><h2>" + today + "</h2><p>" + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> followed.</p></div></div></div>\n")
+            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">" + day + "</span><span class=\"timeline__month\">" + month + "</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><p>" + account["name"] + " <a href=\"https://twitter.com/" + account["screen_name"] + "\">(@" + account["screen_name"] + ", id: " + str(x) + ")</a> followed.</p></div></div></div>\n")
         except:
-            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">2</span><span class=\"timeline__month\">Feb</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><h2>" + today + "</h2><p>Account with id: " + str(x) + " followed.</p></div></div></div>\n")
+            f.write("<div class=\"timeline__box\"><div class=\"timeline__date\"><span class=\"timeline__day\">" + day + "</span><span class=\"timeline__month\">" + month + "</span></div><div class=\"timeline__post\"><div class=\"timeline__content\"><p>Account with id: " + str(x) + " followed.</p></div></div></div>\n")
     f.close
 
 twitterAccounts = ["fwsthlm", "aikfotboll"]
 #twitterAccounts = ["fwsthlm"]
 now = datetime.now() # current date and time
 today = now.strftime("%Y%m%d-%H:%M:%S")
+month = now.strftime("%B")[:3].upper()
+day = now.strftime("%d")
+
 #path = "C:\\Users\\Fredrik\\git\\http-sandbox\\"
 path = "/data/data/com.termux/files/home/git/http-sandbox/"
+
 #create("C:\\Users\\Fredrik\\git\\http-sandbox\\index.html", today, twitterAccounts)
 #create("/data/data/com.termux/files/home/git/http-sandbox/index.html", today, twitterAccounts)
 create(path + "index.html", today, twitterAccounts)
@@ -192,7 +197,7 @@ for twitterAccount in twitterAccounts:
         #print("Size of unfollowerList: " + str(len(unfollowerList)))
         #saveUnfollowerListToFile("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\unfollowers.txt", unfollowerList, today, t)
         #saveUnfollowerListToFile("/data/data/com.termux/files/home/git/http-sandbox/twitter/" + twitterAccount + "/unfollowers.txt", unfollowerList, today, t)
-        saveUnfollowerListToFile(path + "twitter/" + twitterAccount + "/unfollowers.txt", unfollowerList, newfollowerList, today, t)
+        saveUnfollowerListToFile(path + "twitter/" + twitterAccount + "/unfollowers.txt", unfollowerList, newfollowerList, today, month, day, t)
         #for x in unfollowerList:
             #print(x + " unfollowed")
     #saveFollowerListToFile("C:\\Users\\Fredrik\\git\\http-sandbox\\twitter\\" + twitterAccount + "\\followers.txt", currentFollowerList)
